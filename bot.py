@@ -11,7 +11,7 @@ import json
 from datetime import datetime
 
 # ============================================================
-# .env faylini yuklash - BU MUHIM!
+# .env faylini yuklash
 # ============================================================
 from dotenv import load_dotenv
 
@@ -19,8 +19,14 @@ from dotenv import load_dotenv
 env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(env_path)
 
-# Token ni olish
+# Token ni olish - BIRINCHI BOT_TOKEN, ikkinchi TELEGRAM_BOT_TOKEN
 BOT_TOKEN = os.getenv("BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN")
+
+# 🔥 Agar token topilmasa, to'g'ridan-to'g'ri o'rnatish (FAVQULODDA HOLAT)
+if not BOT_TOKEN:
+    # ✅ BU YERGA O'Z TOKENINGIZNI YOZING
+    BOT_TOKEN = "8617023224:AAGqX5DHUgSZYhbs_n25_pklzh7TiUIMuCw"
+    print("⚠️ .env dan token topilmadi, to'g'ridan-to'g'ri token ishlatilmoqda")
 
 # Token tekshiruvi
 if not BOT_TOKEN:
@@ -30,6 +36,7 @@ if not BOT_TOKEN:
     print("1. .env fayli mavjudmi?")
     print("2. .env faylida BOT_TOKEN=... yozilganmi?")
     print("3. .env fayli bot.py bilan bir papkadami?")
+    print("4. Yoki bot.py dagi BOT_TOKEN ga tokeningizni yozing")
     print("=" * 60)
     sys.exit(1)
 
@@ -2235,7 +2242,7 @@ def main():
         logger.warning("FFmpeg topilmadi! Ba'zi funksiyalar ishlamasligi mumkin.")
         logger.warning("FFmpeg o'rnatish: https://ffmpeg.org/download.html")
     
-    # Application yaratish
+    # Application yaratish - BOT_TOKEN ishlatiladi
     app = Application.builder().token(BOT_TOKEN).build()
     
     # === Command Handlerlar ===
