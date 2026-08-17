@@ -10,6 +10,31 @@ import time
 import json
 from datetime import datetime
 
+# ============================================================
+# .env faylini yuklash - BU MUHIM!
+# ============================================================
+from dotenv import load_dotenv
+
+# .env faylini aniq yo'ldan yuklash
+env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+load_dotenv(env_path)
+
+# Token ni olish
+BOT_TOKEN = os.getenv("BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN")
+
+# Token tekshiruvi
+if not BOT_TOKEN:
+    print("=" * 60)
+    print("❌ XATOLIK: BOT_TOKEN topilmadi!")
+    print("Iltimos, quyidagilarni tekshiring:")
+    print("1. .env fayli mavjudmi?")
+    print("2. .env faylida BOT_TOKEN=... yozilganmi?")
+    print("3. .env fayli bot.py bilan bir papkadami?")
+    print("=" * 60)
+    sys.exit(1)
+
+print(f"✅ Bot token topildi: {BOT_TOKEN[:15]}...{BOT_TOKEN[-5:]}")
+
 from telegram import (
     Update, InlineKeyboardButton, InlineKeyboardMarkup,
     ReplyKeyboardMarkup, ReplyKeyboardRemove, InputFile
@@ -22,7 +47,7 @@ from telegram.constants import ParseMode, ChatAction
 from telegram.error import BadRequest, Forbidden, TimedOut
 
 from config import (
-    BOT_TOKEN, ADMIN_IDS, OWNER_ID,
+    BOT_TOKEN as CONFIG_TOKEN, ADMIN_IDS, OWNER_ID,
     MAX_FILE_SIZE, MAX_ROUND_DURATION,
     DOWNLOADS_DIR, OUTPUTS_DIR, TEMP_DIR, MUSIC_DIR, ADMIN_VIDEOS_DIR,
     SPEED_OPTIONS, MUSIC_LIBRARY, FILTER_OPTIONS,
@@ -1875,7 +1900,8 @@ async def handle_watermark_callback(update: Update, context: ContextTypes.DEFAUL
             [InlineKeyboardButton("🟥 Qizil", callback_data="wcolor_qizil"),
              InlineKeyboardButton("🟦 Ko'k", callback_data="wcolor_kok")],
             [InlineKeyboardButton("🟩 Yashil", callback_data="wcolor_yashil"),
-             InlineKeyboardButton("🟨 Sariq", callback_data="wcolor_sariq")]
+             InlineKeyboardButton("🟨 Sariq", callback_data="wcolor_sariq")],
+            [InlineKeyboardButton("🔙 Orqaga", callback_data="wpos_")],
         ]
         await query.edit_message_text(
             "🎨 Matn rangini tanlang:",
@@ -2207,6 +2233,7 @@ def main():
     # FFmpeg tekshirish
     if not check_ffmpeg():
         logger.warning("FFmpeg topilmadi! Ba'zi funksiyalar ishlamasligi mumkin.")
+        logger.warning("FFmpeg o'rnatish: https://ffmpeg.org/download.html")
     
     # Application yaratish
     app = Application.builder().token(BOT_TOKEN).build()
