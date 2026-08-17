@@ -4,13 +4,19 @@ Konfiguratsiya fayli - bot sozlamalari va konstantalar
 import os
 from dotenv import load_dotenv
 
-# .env fayldan o'qish
-load_dotenv()
+# .env fayldan o'qish - aniq yo'lni ko'rsatish
+env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+load_dotenv(env_path)
 
-# Bot asosiy sozlamalari
-BOT_TOKEN = os.getenv("BOT_TOKEN", os.getenv("TELEGRAM_BOT_TOKEN", ""))
-OWNER_ID = int(os.getenv("OWNER_ID", "5675087151"))
-ADMIN_IDS = [int(x) for x in os.getenv("ADMIN_IDS", "5675087151,8404514882").split(",")]
+# Bot asosiy sozlamalari - BOT_TOKEN ni birinchi navbatda TELEGRAM_BOT_TOKEN dan o'qiymiz
+BOT_TOKEN = os.getenv("BOT_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN")
+
+# Agar token bo'sh bo'lsa, xatolik chiqaramiz
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN topilmadi! Iltimos, .env faylini tekshiring.")
+
+OWNER_ID = int(os.getenv("OWNER_ID", "8404514882"))
+ADMIN_IDS = [int(x.strip()) for x in os.getenv("ADMIN_IDS", "5675087151,8404514882").split(",") if x.strip()]
 
 # Fayl o'lcham chegaralari
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
