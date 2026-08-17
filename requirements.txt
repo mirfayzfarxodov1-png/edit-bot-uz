@@ -1,0 +1,9 @@
+python-telegram-bot==20.7
+moviepy==1.0.3
+yt-dlp
+opencv-python
+pillow
+numpy
+aiofiles
+asyncio
+python-dotenv
